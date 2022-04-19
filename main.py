@@ -12,7 +12,7 @@ class RunError():
 
 
 # Running in Github Action, use this to get the config
-config = os.environ.get('config')
+config = json.loads(os.environ.get('config'))
 
 token = config['token']
 client_type = config['type']
