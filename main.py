@@ -52,9 +52,11 @@ if __name__ == '__main__':
         if token == '' or android == 0 or deviceid == '' or devicemodel == '' or appid == 0:
             raise RunError(f'请确认您的配置文件配置正确再运行本程序！')
     if analytics:
-        r.get(
+        ana = r.get(
             f'https://analytics.api.ninym.top/mhyy?type={client_type}&version={version}&android={android}&deviceid={deviceid}&devicename={devicename}&devicemodel={devicemodel}&appid={appid}')
+        print(ana.text)
     res = r.get(SignURL, headers=headers)
+    print(res.text)
     if json.loads(res.text)['message'] != 'OK':
         raise RunError(
             f"请带着一下内容到 https://github.com/ElainaMoe/MHYY-AutoCheckin/issues 发起issue解决（或者自行解决）。签到出错，返回信息如下：{res['text']}")
