@@ -2,15 +2,15 @@ import requests as r
 import json
 import os
 
-with open('./config.json', 'rt') as f:   # Local debugging
-    config = json.loads(f.read())
-    f.close()
+# with open('./config.json', 'rt') as f:   # Local debugging
+#     config = json.loads(f.read())
+#     f.close()
 
 class RunError():
     pass
 
 # Running in Github Action, use this to get the config
-# config = os.environ.get['config']
+config = os.environ.get['config']
 
 token = config['token']
 client_type = config['type']
@@ -39,7 +39,12 @@ headers = {
     'User-Agent': 'okhttp/4.9.0'
 }
 
-res = r.get(SignURL, headers=headers)
-if json.loads(res.text)['message'] != 'OK':
-    raise RunError(f"请带着一下内容到 https://github.com/ElainaMoe/MHYY-AutoCheckin/issues 发起issue解决（或者自行解决）。签到出错，返回信息如下：{res['text']}")
-else: pass
+if __name__ == '__main__':
+    if config == '': raise RunError(f"请在Settings->Secrets->Actions页面中新建名为config的变量，并将你的配置填入后再运行！")    # Verify config
+    else:
+        if token == '' or android == 0 or deviceid == '' or devicemodel == '' or appid == 0:
+            raise RunError(f'请确认您的配置文件配置正确再运行本程序！')
+    res = r.get(SignURL, headers=headers)
+    if json.loads(res.text)['message'] != 'OK':
+        raise RunError(f"请带着一下内容到 https://github.com/ElainaMoe/MHYY-AutoCheckin/issues 发起issue解决（或者自行解决）。签到出错，返回信息如下：{res['text']}")
+    else: pass
