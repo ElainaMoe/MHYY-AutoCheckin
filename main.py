@@ -53,7 +53,7 @@ if __name__ == '__main__':
             raise RunError(f'请确认您的配置文件配置正确再运行本程序！')
     if analytics:
         ana = r.get(
-            f'https://analytics.api.ninym.top/mhyy?type={client_type}&version={version}&android={android}&deviceid={deviceid}&devicename={devicename}&devicemodel={devicemodel}&appid={appid}')
+            f'https://analytics.api.ninym.top/mhyy?type={client_type}&version={version}&android={android}&deviceid={deviceid}&devicename={devicename}&devicemodel={devicemodel}&appid={appid}', verify=False)
         print(ana.text)
     res = r.get(SignURL, headers=headers)
     print(res.text)
