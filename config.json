@@ -1,9 +1,11 @@
 {
     "token": "",
     "type": 0,
+    "version": "2.2.0",
     "android": 0,
     "deviceid": "",
     "devicename": "",
     "devicemodel": "",
-    "appid": 0
+    "appid": 0,
+    "analytics": true
 }
