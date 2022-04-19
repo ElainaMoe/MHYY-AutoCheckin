@@ -1,5 +1,7 @@
 # MHYY-AutoCheckin
 
+![MHYY-AutoCheckin](https://socialify.git.ci/ElainaMoe/MHYY-AutoCheckin/image?forks=1&language=1&name=1&owner=1&stargazers=1&theme=Light)
+
 米哈云游（云原神）自动签到脚本
 
 **请不要进行宣传，谢谢！一旦发现宣传就删库跑路！**
