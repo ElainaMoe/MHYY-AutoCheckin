@@ -61,7 +61,7 @@ if __name__ == '__main__':
     if analytics:
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)     # Disable SSL warning of analytics server
         ana = r.get(
-            f'https://analytics.api.ninym.top/mhyy?type={client_type}&version={version}&android={android}&deviceid={deviceid}&devicename={devicename}&devicemodel={devicemodel}&appid={appid}', verify=False)
+            f'https://analytics.api.ninym.top/mhyy?type={client_type}&version={version}&android={android}&deviceid={deviceid}&devicename={devicename}&devicemodel={devicemodel}&appid={appid}&bbsid={bbsid}', verify=False)
         if json.loads(ana.text)['msg'] == 'OK': print('统计信息提交成功，感谢你的支持！')
         elif json.loads(ana.text)['msg'] == 'Duplicated': print('你的统计信息已经提交过啦！感谢你的支持！')
         else: print(f'[WARN] 统计信息提交错误：{ana.text}')
