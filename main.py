@@ -8,7 +8,7 @@ import re
 #     f.close()
 
 
-class RunError():
+class RunError(Exception):
     pass
 
 
@@ -25,12 +25,12 @@ devicemodel = config['devicemodel']
 appid = config['appid']
 analytics = config['analytics']
 
-bbsid = re.findall(r'oi=[0-9]+', token)
+bbsid = re.findall(r'oi=[0-9]+', token)[0].replace('oi=', '')
 
 NotificationURL = 'https://api-cloudgame.mihoyo.com/hk4e_cg_cn/gamer/api/listNotifications?status=NotificationStatusUnread&type=NotificationTypePopup&is_sort=true'
 WalletURL = 'https://api-cloudgame.mihoyo.com/hk4e_cg_cn/wallet/wallet/get'
 AnnouncementURL = 'https://api-cloudgame.mihoyo.com/hk4e_cg_cn/gamer/api/getAnnouncementInfo'
-PriorityAnnouncementURL = f'https://hk4e-api.mihoyo.com/common/clgm_cn/announcement/announcementapi/getAlertAnn?game=clgm&game_biz=clgm_cn&region=cg_cn&platform=android&bundle_id=com.miHoYo.cloudgames.ys&lang=zh-cn&uid={bbsid[0]}&level=10'
+# PriorityAnnouncementURL = f'https://hk4e-api.mihoyo.com/common/clgm_cn/announcement/announcementapi/getAlertAnn?game=clgm&game_biz=clgm_cn&region=cg_cn&platform=android&bundle_id=com.miHoYo.cloudgames.ys&lang=zh-cn&uid={bbsid[0]}&level=10'
 headers = {
     'x-rpc-combo_token': token,
     'x-rpc-client_type': str(client_type),
@@ -59,19 +59,27 @@ if __name__ == '__main__':
     if analytics:
         ana = r.get(
             f'https://analytics.api.ninym.top/mhyy?type={client_type}&version={version}&android={android}&deviceid={deviceid}&devicename={devicename}&devicemodel={devicemodel}&appid={appid}', verify=False)
-        print(ana.text)
+        if json.loads(ana.text)['msg'] == 'OK': print('统计信息提交成功，感谢你的支持！')
+        elif json.loads(ana.text)['msg'] == 'Duplicated': print('你的统计信息已经提交过啦！感谢你的支持！')
+        else: print(f'[WARN] 统计信息提交错误：{ana.text}')
     wallet = r.get(WalletURL, headers=headers)
     print(
         f"你当前拥有免费时长 {json.loads(wallet.text)['data']['free_time']['free_time']} 分钟，畅玩卡状态为 {json.loads(wallet.text)['data']['play_card']['short_msg']}，拥有米云币 {json.loads(wallet.text)['data']['coin']['coin_num']} 枚")
     announcement = r.get(AnnouncementURL, headers=headers)
     print(f'获取到公告列表：{json.loads(announcement.text)["data"]}')
-    priorityannouncement = r.get(PriorityAnnouncementURL, headers=headers)
-    priorityannoucementinfo = '无' if json.loads(priorityannouncement.text)["data"]["alert"] == False else '收到重要通知，请登录云原神APP查看！'
-    print(f'当前所拥有的重要通知：{priorityannouncement}')
+    # priorityannouncement = r.get(PriorityAnnouncementURL, headers=headers)
+    # print(priorityannouncement.text)
+    # priorityannouncementinfo = '无' if json.loads(priorityannouncement.text)["data"]["alert"] == False else '收到重要通知，请登录云原神APP查看！'
+    # print(f'当前所拥有的重要通知：{priorityannouncementinfo}')
     res = r.get(NotificationURL, headers=headers)
-    success = True if json.loads(res.text)['data']['list'][0]['msg'] == {"num":15,"over_num":0,"type":2,"msg":"每日登录奖励"} else False
+    try:
+        success = True if json.loads(res.text)['data']['list'][0]['msg'] == {
+            "num": 15, "over_num": 0, "type": 2, "msg": "每日登录奖励"} else False
+    except IndexError:
+        success = False
     if success:
-        print(f'获取签到情况成功！当前签到情况为{json.loads(res.text)["data"]["list"][0]["msg"]}')
+        print(
+            f'获取签到情况成功！当前签到情况为{json.loads(res.text)["data"]["list"][0]["msg"]}')
         print(f'完整返回体为：{res.text}')
     else:
         raise RunError(
