@@ -2,6 +2,8 @@ import requests as r
 import json
 import os
 import re
+import urllib3 
+
 
 # with open('./config.json', 'rt') as f:   # Local debugging
 #     config = json.loads(f.read())
@@ -57,6 +59,7 @@ if __name__ == '__main__':
         if token == '' or android == 0 or deviceid == '' or devicemodel == '' or appid == 0:
             raise RunError(f'请确认您的配置文件配置正确再运行本程序！')
     if analytics:
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)     # Disable SSL warning of analytics server
         ana = r.get(
             f'https://analytics.api.ninym.top/mhyy?type={client_type}&version={version}&android={android}&deviceid={deviceid}&devicename={devicename}&devicemodel={devicemodel}&appid={appid}', verify=False)
         if json.loads(ana.text)['msg'] == 'OK': print('统计信息提交成功，感谢你的支持！')
