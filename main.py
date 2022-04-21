@@ -3,19 +3,27 @@ import json
 import os
 import re
 import urllib3 
+import sentry_sdk
 
+with open('./config.json', 'rt') as f:   # Local debugging
+    config = json.loads(f.read())
+    f.close()
 
-# with open('./config.json', 'rt') as f:   # Local debugging
-#     config = json.loads(f.read())
-#     f.close()
+sentry_sdk.init(
+    "https://425d7b4536f94c9fa540fe34dd6609a2@o361988.ingest.sentry.io/6352584",
 
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0
+)
 
 class RunError(Exception):
     pass
 
 
 # Running in Github Action, use this to get the config
-config = json.loads(os.environ.get('config'))
+# config = json.loads(os.environ.get('config'))
 
 token = config['token']
 client_type = config['type']
