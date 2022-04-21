@@ -44,7 +44,7 @@ headers = {
     'User-Agent': 'okhttp/4.9.0'
 }
 
-def main_handler(*args):
+def handler(*args):
     if config == '':
         # Verify config
         raise RunError(
