@@ -1,21 +1,16 @@
 import requests as r
 import json
-import os
 import re
 import urllib3 
 
 
-# with open('./config.json', 'rt') as f:   # Local debugging
-#     config = json.loads(f.read())
-#     f.close()
+with open('./config.json', 'rt') as f:   # SCF config loader
+    config = json.loads(f.read())
+    f.close()
 
 
 class RunError(Exception):
     pass
-
-
-# Running in Github Action, use this to get the config
-config = json.loads(os.environ.get('config'))
 
 token = config['token']
 client_type = config['type']
@@ -49,7 +44,7 @@ headers = {
     'User-Agent': 'okhttp/4.9.0'
 }
 
-if __name__ == '__main__':
+def main_handler(*args):
     if config == '':
         # Verify config
         raise RunError(
