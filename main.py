@@ -18,14 +18,11 @@ sentry_sdk.init(
     traces_sample_rate=1.0
 )
 
-config = os.environ.get("config")
+# Running in Github Action, use this to get the config
+config = json.loads(os.environ.get('config'))
 
 class RunError(Exception):
     pass
-
-
-# Running in Github Action, use this to get the config
-# config = json.loads(os.environ.get('config'))
 
 token = config['token']
 client_type = config['type']
