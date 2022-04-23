@@ -79,13 +79,22 @@ if __name__ == '__main__':
     print(f'获取到公告列表：{json.loads(announcement.text)["data"]}')
     res = r.get(NotificationURL, headers=headers)
     try:
-        success = True if json.loads(json.loads(res.text)['data']['list'][0]['msg']) == {"num": 15, "over_num": 0, "type": 2, "msg": "每日登录奖励"} else False
+        if json.loads(json.loads(res.text)['data']['list'][0]['msg']) == {"num": 15, "over_num": 0, "type": 2, "msg": "每日登录奖励"}:
+            success = True 
+            Signed = False
+        elif json.loads(json.loads(res.text)['data']['list'][0]['msg']) == {"retcode":0,"message":"OK","data":{"list":[]}}:
+            success = True
+            Signed = True
     except IndexError:
         success = False
     if success:
-        print(
-            f'获取签到情况成功！当前签到情况为{json.loads(res.text)["data"]["list"][0]["msg"]}')
-        print(f'完整返回体为：{res.text}')
+        if not Signed:
+            print(
+                f'获取签到情况成功！当前签到情况为{json.loads(res.text)["data"]["list"][0]["msg"]}')
+            print(f'完整返回体为：{res.text}')
+        else:
+            print(f'获取签到情况成功！今天是否已经签到过了呢？ {json.loads(res.text)["data"]["list"][0]["msg"]}')
+            print(f'完整返回体为：{res.text}')
     else:
         raise RunError(
             f"签到失败！请带着本次运行的所有log内容到 https://github.com/ElainaMoe/MHYY-AutoCheckin/issues 发起issue解决（或者自行解决）。签到出错，返回信息如下：{res.text}")
