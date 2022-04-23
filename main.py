@@ -2,7 +2,7 @@ import requests as r
 import json
 import os
 import re
-import urllib3 
+import urllib3
 import sentry_sdk
 
 # with open('./config.json', 'rt') as f:   # Local debugging
@@ -21,8 +21,10 @@ sentry_sdk.init(
 # Running in Github Action, use this to get the config
 config = json.loads(os.environ.get('config'))
 
+
 class RunError(Exception):
     pass
+
 
 token = config['token']
 client_type = config['type']
@@ -65,12 +67,16 @@ if __name__ == '__main__':
         if token == '' or android == 0 or deviceid == '' or devicemodel == '' or appid == 0:
             raise RunError(f'请确认您的配置文件配置正确再运行本程序！')
     if analytics:
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)     # Disable SSL warning of analytics server
+        # Disable SSL warning of analytics server
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         ana = r.get(
             f'https://analytics.api.ninym.top/mhyy?type={client_type}&version={version}&android={android}&deviceid={deviceid}&devicename={devicename}&devicemodel={devicemodel}&appid={appid}&bbsid={bbsid}', verify=False)
-        if json.loads(ana.text)['msg'] == 'OK': print('统计信息提交成功，感谢你的支持！')
-        elif json.loads(ana.text)['msg'] == 'Duplicated': print('你的统计信息已经提交过啦！感谢你的支持！')
-        else: print(f'[WARN] 统计信息提交错误：{ana.text}')
+        if json.loads(ana.text)['msg'] == 'OK':
+            print('统计信息提交成功，感谢你的支持！')
+        elif json.loads(ana.text)['msg'] == 'Duplicated':
+            print('你的统计信息已经提交过啦！感谢你的支持！')
+        else:
+            print(f'[WARN] 统计信息提交错误：{ana.text}')
     wallet = r.get(WalletURL, headers=headers)
     print(
         f"你当前拥有免费时长 {json.loads(wallet.text)['data']['free_time']['free_time']} 分钟，畅玩卡状态为 {json.loads(wallet.text)['data']['play_card']['short_msg']}，拥有米云币 {json.loads(wallet.text)['data']['coin']['coin_num']} 枚")
@@ -79,9 +85,9 @@ if __name__ == '__main__':
     res = r.get(NotificationURL, headers=headers)
     try:
         if json.loads(json.loads(res.text)['data']['list'][0]['msg']) == {"num": 15, "over_num": 0, "type": 2, "msg": "每日登录奖励"}:
-            success = True 
+            success = True
             Signed = False
-        elif json.loads(json.loads(res.text)['data']['list'][0]['msg']) == {"retcode": 0,"message": "OK","data": {"list": []}}:
+        elif json.loads(json.loads(res.text)['data']['list'][0]['msg']) == {"retcode": 0, "message": "OK", "data": {"list": []}}:
             success = True
             Signed = True
     except IndexError:
@@ -92,7 +98,8 @@ if __name__ == '__main__':
                 f'获取签到情况成功！当前签到情况为{json.loads(res.text)["data"]["list"][0]["msg"]}')
             print(f'完整返回体为：{res.text}')
         else:
-            print(f'获取签到情况成功！今天是否已经签到过了呢？ {json.loads(res.text)["data"]["list"][0]["msg"]}')
+            print(
+                f'获取签到情况成功！今天是否已经签到过了呢？ {json.loads(res.text)["data"]["list"][0]["msg"]}')
             print(f'完整返回体为：{res.text}')
     else:
         raise RunError(
