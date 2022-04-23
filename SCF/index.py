@@ -87,7 +87,7 @@ def handler(*args):
             print(f'完整返回体为：{res.text}')
         else:
             print(
-                f'获取签到情况成功！今天是否已经签到过了呢？ {json.loads(res.text)["data"]["list"][0]["msg"]}')
+                f'获取签到情况成功！今天是否已经签到过了呢？')
             print(f'完整返回体为：{res.text}')
     else:
         raise RunError(
