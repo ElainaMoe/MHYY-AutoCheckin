@@ -87,7 +87,7 @@ if __name__ == '__main__':
         if json.loads(json.loads(res.text)['data']['list'][0]['msg']) == {"num": 15, "over_num": 0, "type": 2, "msg": "每日登录奖励"}:
             success = True
             Signed = False
-        elif json.loads(json.loads(res.text)['data']['list'][0]['msg']) == {"retcode": 0, "message": "OK", "data": {"list": []}}:
+        elif json.loads(res.text)['data']['list'] == []:
             success = True
             Signed = True
     except IndexError:
