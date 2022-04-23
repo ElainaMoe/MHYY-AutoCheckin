@@ -84,12 +84,12 @@ if __name__ == '__main__':
     print(f'获取到公告列表：{json.loads(announcement.text)["data"]}')
     res = r.get(NotificationURL, headers=headers)
     try:
-        if json.loads(json.loads(res.text)['data']['list'][0]['msg']) == {"num": 15, "over_num": 0, "type": 2, "msg": "每日登录奖励"}:
-            success = True
-            Signed = False
-        elif json.loads(res.text)['data']['list'] == []:
+        if list(json.loads(res.text)['data']['list']) == []:
             success = True
             Signed = True
+        elif json.loads(json.loads(res.text)['data']['list'][0]['msg']) == {"num": 15, "over_num": 0, "type": 2, "msg": "每日登录奖励"}:
+            success = True
+            Signed = False
     except IndexError:
         success = False
     if success:
