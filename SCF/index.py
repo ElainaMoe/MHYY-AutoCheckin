@@ -78,6 +78,8 @@ def handler(*args):
         elif json.loads(json.loads(res.text)['data']['list'][0]['msg']) == {"num": 15, "over_num": 0, "type": 2, "msg": "每日登录奖励"}:
             success = True
             Signed = False
+        else:
+            success = False
     except IndexError:
         success = False
     if success:
