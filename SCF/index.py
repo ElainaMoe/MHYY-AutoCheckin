@@ -2,7 +2,8 @@ import requests as r
 import json
 import re
 import urllib3
-
+import time
+import random
 
 with open('./config.json', 'rt') as f:   # SCF config loader
     config = json.loads(f.read())
@@ -65,6 +66,8 @@ def handler(*args):
             print('你的统计信息已经提交过啦！感谢你的支持！')
         else:
             print(f'[WARN] 统计信息提交错误：{ana.text}')
+    wait_time = random(1, 300)  # Random wait time
+    time.sleep(wait_time)   # Wait for random time to avoid ban
     wallet = r.get(WalletURL, headers=headers)
     print(
         f"你当前拥有免费时长 {json.loads(wallet.text)['data']['free_time']['free_time']} 分钟，畅玩卡状态为 {json.loads(wallet.text)['data']['play_card']['short_msg']}，拥有米云币 {json.loads(wallet.text)['data']['coin']['coin_num']} 枚")

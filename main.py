@@ -4,6 +4,8 @@ import os
 import re
 import urllib3
 import sentry_sdk
+import random
+import time
 
 # with open('./config.json', 'rt') as f:   # Local debugging
 #     config = json.loads(f.read())
@@ -77,6 +79,8 @@ if __name__ == '__main__':
             print('你的统计信息已经提交过啦！感谢你的支持！')
         else:
             print(f'[WARN] 统计信息提交错误：{ana.text}')
+    wait_time = random.randint(1, 3600) # Random Sleep to Avoid Ban
+    time.sleep(wait_time)
     wallet = r.get(WalletURL, headers=headers)
     print(
         f"你当前拥有免费时长 {json.loads(wallet.text)['data']['free_time']['free_time']} 分钟，畅玩卡状态为 {json.loads(wallet.text)['data']['play_card']['short_msg']}，拥有米云币 {json.loads(wallet.text)['data']['coin']['coin_num']} 枚")
