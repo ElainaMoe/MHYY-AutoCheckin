@@ -87,21 +87,31 @@ if __name__ == '__main__':
         if list(json.loads(res.text)['data']['list']) == []:
             success = True
             Signed = True
+            Over = False
         elif json.loads(json.loads(res.text)['data']['list'][0]['msg']) == {"num": 15, "over_num": 0, "type": 2, "msg": "每日登录奖励"}:
             success = True
             Signed = False
+            Over = False
+        elif json.loads(json.loads(res.text)['data']['list'][0]['msg'])['over_num'] > 0:
+            success = True
+            Signed = False
+            Over = True
         else:
             success = False
     except IndexError:
         success = False
     if success:
-        if not Signed:
+        if Signed:
             print(
-                f'获取签到情况成功！当前签到情况为{json.loads(res.text)["data"]["list"][0]["msg"]}')
+                f'获取签到情况成功！今天是否已经签到过了呢？')
+            print(f'完整返回体为：{res.text}')
+        elif not Signed and Over:
+            print(
+                f'获取签到情况成功！当前免费时长已经达到上限！签到情况为{json.loads(res.text)["data"]["list"][0]["msg"]}')
             print(f'完整返回体为：{res.text}')
         else:
             print(
-                f'获取签到情况成功！今天是否已经签到过了呢？')
+                f'获取签到情况成功！当前签到情况为{json.loads(res.text)["data"]["list"][0]["msg"]}')
             print(f'完整返回体为：{res.text}')
     else:
         raise RunError(
