@@ -12,6 +12,8 @@
 
 请参阅[文档](https://bili33.top/posts/MHYY-AutoCheckin-Manual/)进行配置，有问题请在issue中提出。
 
+**要是真的不会用就别不好意思开issue问啦，我在Sentry的后台看到了一堆不知道怎么形容的Bug**
+
 ## 赞助
 点击下面的Badge其中一个就可以跳转到相应页面，感谢老板的支持！
 
