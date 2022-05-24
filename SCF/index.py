@@ -67,6 +67,7 @@ def handler(*args):
         else:
             print(f'[WARN] 统计信息提交错误：{ana.text}')
     wait_time = random(1, 300)  # Random wait time
+    print(f'为了避免同一时间签到人数太多导致被官方怀疑，开始休眠 {wait_time} 秒')
     time.sleep(wait_time)   # Wait for random time to avoid ban
     wallet = r.get(WalletURL, headers=headers)
     print(
