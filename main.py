@@ -54,7 +54,7 @@ headers = {
     'x-rpc-device_model': devicemodel,
     'x-rpc-app_id': str(appid),
     'Referer': 'https://app.mihoyo.com',
-    'Host': 'hk4e-api.mihoyo.com',
+    'Host': 'api-cloudgame.mihoyo.com',
     'Connection': 'Keep-Alive',
     'Accept-Encoding': 'gzip',
     'User-Agent': 'okhttp/4.9.0'
