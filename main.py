@@ -88,6 +88,7 @@ if __name__ == '__main__':
     announcement = r.get(AnnouncementURL, headers=headers)
     print(f'获取到公告列表：{json.loads(announcement.text)["data"]}')
     res = r.get(NotificationURL, headers=headers)
+    success,Signed = False,False
     try:
         if list(json.loads(res.text)['data']['list']) == []:
             success = True
