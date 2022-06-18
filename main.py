@@ -23,20 +23,31 @@ sentry_sdk.init(
 # Running in Github Action, use this to get the config
 config = json.loads(os.environ.get('config'))
 
+with open('./config.json', 'rt') as f:   # ONLY FOR TESTING
+    config = json.loads(f.read())
+    f.close()
 
 class RunError(Exception):
     pass
 
-
-token = config['token']
-client_type = config['type']
-version = config['version']
-android = config['android']
-deviceid = config['deviceid']
-devicename = config['devicename']
-devicemodel = config['devicemodel']
-appid = config['appid']
-analytics = config['analytics']
+if config['type'] == 2:
+    token = config['token']
+    version = config['version']
+    android = config['android']
+    deviceid = config['deviceid']
+    devicename = config['devicename']
+    devicemodel = config['devicemodel']
+    analytics = config['analytics']
+elif config['type'] == 1:
+    token = config['token']
+    version = config['version']
+    auth = config['auth']
+    deviceid = config['deviceid']
+    iOS_ver = config['iOS_ver']
+    cookie = config['cookie']
+    analytics = config['analytics']
+else:
+    raise RunError(f'Excepted correct type 1(iOS) or 2(Android) not {config["type"]}')
 
 bbsid = re.findall(r'oi=[0-9]+', token)[0].replace('oi=', '')
 
@@ -45,14 +56,14 @@ WalletURL = 'https://api-cloudgame.mihoyo.com/hk4e_cg_cn/wallet/wallet/get'
 AnnouncementURL = 'https://api-cloudgame.mihoyo.com/hk4e_cg_cn/gamer/api/getAnnouncementInfo'
 headers = {
     'x-rpc-combo_token': token,
-    'x-rpc-client_type': str(client_type),
+    'x-rpc-client_type': 2,
     'x-rpc-app_version': str(version),
     'x-rpc-sys_version': str(android),
     'x-rpc-channel': 'mihoyo',
     'x-rpc-device_id': deviceid,
     'x-rpc-device_name': devicename,
     'x-rpc-device_model': devicemodel,
-    'x-rpc-app_id': str(appid),
+    'x-rpc-app_id': '1953439974',
     'Referer': 'https://app.mihoyo.com',
     'Host': 'api-cloudgame.mihoyo.com',
     'Connection': 'Keep-Alive',
@@ -60,19 +71,66 @@ headers = {
     'User-Agent': 'okhttp/4.9.0'
 }
 
+iOSHeaders={
+    'Host': 'api-cloudgame.mihoyo.com',
+    'x-rpc-device_model': 'iPhone11,8',
+    'Referer': 'https://app.mihoyo.com',
+    'x-rpc-device_name': 'iPhone',
+    'cms-signature': 'hmac-sha1',
+    # Content-Length: 2618
+    'CONTENT-MD5': '2fcf1c313d507ec6652fe075ca920271',
+    'Date': str(int(time.time())),
+    'x-rpc-channel': 'appstore',
+    'x-rpc-app_version': str(version),
+    'Authorization': str(auth),
+    'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
+    'Connection': 'keep-alive',
+    'x-rpc-client_type': '1',
+    'x-rpc-device_id': str(deviceid),
+    'Accept': '*/*',
+    'Content-Type': 'application/json',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'x-rpc-sys_version': str(iOS_ver),
+    'x-rpc-combo_token': str(token),
+    'Cookie': str(cookie)
+}
+
+
+#coding:utf-8
+ 
+import hashlib
+import hmac
+ 
+# 秘钥
+sk = "e3988cce1bdcd1db1b0a1313e598b12040d4e16f"
+ 
+# 需要加密的msg，自定义
+msg = "GET\nuid:001\n1467556840"
+ 
+ 
+#授权
+def get_authorization(sk, msg):
+    hashing = hmac.new(sk, msg, hashlib.sha1).hexdigest()
+    return hashing
+ 
+
 if __name__ == '__main__':
     if config == '':
         # Verify config
         raise RunError(
             f"请在Settings->Secrets->Actions页面中新建名为config的变量，并将你的配置填入后再运行！")
     else:
-        if token == '' or android == 0 or deviceid == '' or devicemodel == '' or appid == 0:
+        if token == '' or android == 0 or deviceid == '' or devicemodel == '':
             raise RunError(f'请确认您的配置文件配置正确再运行本程序！')
     if analytics:
         # Disable SSL warning of analytics server
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        ana = r.get(
-            f'https://analytics.api.ninym.top/mhyy?type={client_type}&version={version}&android={android}&deviceid={deviceid}&devicename={devicename}&devicemodel={devicemodel}&appid={appid}&bbsid={bbsid}', verify=False)
+        if type == 2:
+            ana = r.get(
+                f'https://analytics.api.ninym.top/mhyy?type={config["type"]}&version={version}&android={android}&deviceid={deviceid}&devicename={devicename}&devicemodel={devicemodel}&appid={appid}&bbsid={bbsid}', verify=False)
+        # else:     # iOS is not supported yet
+        #     ana = r.get(
+        #         f'https://analytics.api.ninym.top/mhyy?type={config["type"]}&version={version}&android={android}&deviceid={deviceid}&devicename={devicename}&devicemodel={devicemodel}&appid={appid}&bbsid={bbsid}', verify=False)
         if json.loads(ana.text)['msg'] == 'OK':
             print('统计信息提交成功，感谢你的支持！')
         elif json.loads(ana.text)['msg'] == 'Duplicated':

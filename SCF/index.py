@@ -4,15 +4,23 @@ import re
 import urllib3
 import time
 import random
-
-with open('./config.json', 'rt') as f:   # SCF config loader
-    config = json.loads(f.read())
-    f.close()
-
+import sys
+import os
 
 class RunError(Exception):
     pass
 
+
+if os.path.exists('./iOSconfig.json'):
+    with open('./iOSconfig.json', 'rt') as f:   # Local debugging
+        config = json.loads(f.read())
+        f.close()
+elif os.path.exists('./config.json'):
+    with open('./config.json', 'rt') as f:   # SCF config loader
+        config = json.loads(f.read())
+        f.close()
+else:
+    raise RunError('You need to configure the config.json/iOSconfig.json first!')
 
 token = config['token']
 client_type = config['type']
