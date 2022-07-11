@@ -47,7 +47,7 @@ headers = {
     'x-rpc-combo_token': token,
     'x-rpc-client_type': str(client_type),
     'x-rpc-app_version': str(version),
-    'x-rpc-sys_version': android,
+    'x-rpc-sys_version': str(android),  # Previous version need to convert the type of this var
     'x-rpc-channel': 'mihoyo',
     'x-rpc-device_id': deviceid,
     'x-rpc-device_name': devicename,
