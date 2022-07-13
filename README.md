@@ -28,7 +28,7 @@
 
 ## 友链
 
-[HuanLinMaster/GenshinCloudPlayHelper](https://github.com/HuanLinMaster/GenshinCloudPlayHelper)
+[Node.js版的云原神15分钟获取器 带邮件发送日志功能 需自备服务器 HuanLinMaster/GenshinCloudPlayHelper](https://github.com/HuanLinMaster/GenshinCloudPlayHelper)
 
 ## Contributions
 
