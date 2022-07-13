@@ -30,7 +30,11 @@ class RunError(Exception):
 
 token = config['token']
 client_type = config['type']
-version = config['version']
+try:
+    ver_info = r.get('https://api-cloudgame-static.mihoyo.com/hk4e_cg_cn/gamer/api/getFunctionShieldNew?client_type=1').text
+    version = json.loads(ver_info)['data']['config']['cg.key_function_controller']['versions'][-1]
+except:
+    version = config['version']
 android = config['android']
 deviceid = config['deviceid']
 devicename = config['devicename']
